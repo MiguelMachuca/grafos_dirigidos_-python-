@@ -1,13 +1,16 @@
-'''
-    Titulo: Estructura de datos de tipo abstracto que consiste en un conjunto de vertices y
-    un conjunto de aristas que establecen relaciones entre los vertices
-    Autor: Miguel Angel Machuca Yavita
-    Fecha: 09/06/2022
-    Version: 1.0
 
-'''
+"""
+Titulo: Estructura de datos de tipo abstracto que consiste en un conjunto de vertices y
+un conjunto de aristas que establecen relaciones entre los vertices
+Autor: Miguel Angel Machuca Yavita
+Fecha: 10/06/2022
+Version: 2.0
+"""
 
+    
+# ¿ implementar los metodos de camino mas corto y costo minimo sobre las estructura de grafos?
 import sys
+from priodict import priorityDictionary
 
 class Grafo:  # Método crear instancia de la clase Arbol {objeto} establecer valor de tipo objeto
     
@@ -86,23 +89,38 @@ class Grafo:  # Método crear instancia de la clase Arbol {objeto} establecer va
 
         return min_index
 
-    def dijk(self, source):
+    def Dijkstra(self, G,start,end=None):
 
-        dist = [sys.maxsize] * self.maximo
-        dist[source] = 0
-        sptSet = [False] * self.maximo
+        D = {}	# dictionary of final distances
+        P = {}	# dictionary of predecessors
+        Q = priorityDictionary()   # est.dist. of non-final vert.
+        Q[start] = 0
+        
+        for v in Q:
+            D[v] = Q[v]
+            if v == end: break
+            
+            for w in G[v]:
+                vwLength = D[v] + G[v][w]
+                if w in D:
+                    if vwLength < D[w]:
+                        raise ValueError
+                elif w not in Q or vwLength < Q[w]:
+                    Q[w] = vwLength
+                    P[w] = v
+        
+        return (D,P)
 
-        for cout in range(self.maximo):
+    def shortestPath(self, G,start,end):
 
-            u = self.minDistance(dist, sptSet)
-
-            sptSet[u] = True
-
-            for v in range(self.maximo):
-                if self.graph[u][v] > 0 and sptSet[v] == False and dist[v] > dist[u] + self.matriz[u][v]:
-                    dist[v] = dist[u] + self.graph[u][v]
-
-    self.pSol(dist)
+        D,P = self.Dijkstra(G,start,end)
+        Path = []
+        while 1:
+            Path.append(end)
+            if end == start: break
+            end = P[end]
+        Path.reverse()
+        return Path
 
 
     def mostrar_matriz(self):
